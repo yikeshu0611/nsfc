@@ -14,6 +14,7 @@
 #'
 #' @examples abstract(yearStart=2018)
 abstract <- function(url,header,subject,search,yearStart,yearEnd,itemCategory,fundStart,fundEnd){
+    if (missing(search)) stop(tmcn::toUTF8('search\u4E0D\u80FD\u4E3A\u7A7A'))
     inner_Add_Symbol <- function(character,symbol="+"){
         if (length(character)>=2){
             for (character.i in 1:length(character)) {
