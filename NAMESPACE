@@ -3,3 +3,4 @@
 export(abstract)
 export(nsfc)
 export(search)
+export(subject)
