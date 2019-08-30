@@ -1,15 +1,18 @@
 #' get nsfc subject
 #' @description get nsfc subject from http://www.sciencenet.cn/, by key
+#'
 #' @param url url
 #' @param header header
 #' @param subject subject, ex:H0801
 #' @param yearStart number, year of start
+#' @param year_ascend a logical argument, default is TRUE, ordre by year ascending
 #' @param yearEnd number, year of start
+#'
 #' @return dataframe
 #' @export
 #'
 #' @examples subject(yearStart=2018)
-subject <- function(url,header,subject,yearStart,yearEnd){
+subject <- function(url,header,subject,yearStart,yearEnd,year_ascend=TRUE){
     inner_Add_Symbol <- function(character,symbol="+"){
         if (length(character)>=2){
             for (character.i in 1:length(character)) {
@@ -34,7 +37,11 @@ subject <- function(url,header,subject,yearStart,yearEnd){
         if (!missing(subject))      url=paste0(url,"&subject=",subject)
         if (!missing(yearStart))    url=paste0(url,"&yearStart=",yearStart)
         if (!missing(yearEnd))      url=paste0(url,"&yearEnd=",yearEnd)
-        url=paste0(url,"&submit=list&order=searchYearEnd&orderType=asc")
+        if (year_ascend){
+            url=paste0(url,"&submit=list&order=searchYearEnd&orderType=asc")
+        }else{
+            url=paste0(url,"&submit=list&order=searchYearEnd&orderType=desc")
+        }
         #get total page number
         if (missing(header)) r <- GET(url)
         if (!missing(header)) r <- GET(url,add_headers(.headers = header))
@@ -117,6 +124,10 @@ subject <- function(url,header,subject,yearStart,yearEnd){
     }
     #if page_number is not zero, we will conduct
     if (page_number != 0){
+        if (page_number >20){
+            page_number=20
+            cat(tmcn::toUTF8('\u4EC5\u4EC5\u6574\u7406\u524D20\u9875'),'\n')
+        }
         # scrab
         cat(tmcn::toUTF8('\u9875\u7801:\u9879\u76EE\u5E8F\u53F7\n'))
         for (i in 1:page_number) {

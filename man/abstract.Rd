@@ -4,8 +4,8 @@
 \alias{abstract}
 \title{get nsfc abstract}
 \usage{
-abstract(url, header, subject, search, yearStart, yearEnd, itemCategory,
-  fundStart, fundEnd)
+abstract(url, header, subject, search, yearStart, yearEnd,
+  year_ascend = TRUE, itemCategory, fundStart, fundEnd)
 }
 \arguments{
 \item{url}{url}
@@ -19,6 +19,8 @@ abstract(url, header, subject, search, yearStart, yearEnd, itemCategory,
 \item{yearStart}{number, year of start}
 
 \item{yearEnd}{number, year of start}
+
+\item{year_ascend}{a logical argument, default is TRUE, ordre by year ascending}
 
 \item{itemCategory}{category}
 

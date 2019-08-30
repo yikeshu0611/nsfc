@@ -4,7 +4,7 @@
 \alias{subject}
 \title{get nsfc subject}
 \usage{
-subject(url, header, subject, yearStart, yearEnd)
+subject(url, header, subject, yearStart, yearEnd, year_ascend = TRUE)
 }
 \arguments{
 \item{url}{url}
@@ -16,6 +16,8 @@ subject(url, header, subject, yearStart, yearEnd)
 \item{yearStart}{number, year of start}
 
 \item{yearEnd}{number, year of start}
+
+\item{year_ascend}{a logical argument, default is TRUE, ordre by year ascending}
 }
 \value{
 dataframe

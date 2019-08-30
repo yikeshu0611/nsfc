@@ -6,6 +6,7 @@
 #' @param search string to search, ex: "m6A"
 #' @param yearStart number, year of start
 #' @param yearEnd number, year of start
+#' @param year_ascend a logical argument, default is TRUE, ordre by year ascending
 #' @param itemCategory category
 #' @param fundStart fund min
 #' @param fundEnd fund max
@@ -13,7 +14,9 @@
 #' @export
 #'
 #' @examples search(search='m6A',yearStart=2014,yearEnd=2014)
-search <- function(url,header,search,subject,yearStart,yearEnd,itemCategory,fundStart,fundEnd){
+search <- function(url,header,search,subject,yearStart,yearEnd,
+                   year_ascend=TRUE,
+                   itemCategory,fundStart,fundEnd){
     if (missing(search)) stop(tmcn::toUTF8('search\u4E0D\u80FD\u4E3A\u7A7A'))
     inner_Add_Symbol <- function(character,symbol="+"){
         if (length(character)>=2){
@@ -52,7 +55,11 @@ search <- function(url,header,search,subject,yearStart,yearEnd,itemCategory,fund
         if (!missing(itemCategory)) url=paste0(url,"&category",itemCategory)
         if (!missing(fundStart))    url=paste0(url,"&fundStart",fundStart)
         if (!missing(fundEnd))      url=paste0(url,"&fundEnd",fundEnd)
-        url=paste0(url,"&submit=list&order=searchYearEnd&orderType=asc")
+        if (year_ascend){
+            url=paste0(url,"&submit=list&order=searchYearEnd&orderType=asc")
+        }else{
+            url=paste0(url,"&submit=list&order=searchYearEnd&orderType=desc")
+        }
         #get total page number
         if (missing(header)) r <- GET(url)
         if (!missing(header)) r <- GET(url,add_headers(.headers = header))
@@ -134,6 +141,10 @@ search <- function(url,header,search,subject,yearStart,yearEnd,itemCategory,fund
     }
     #if page_number is not zero, we will conduct
     if (page_number != 0){
+        if (page_number >20){
+            page_number=20
+            cat(tmcn::toUTF8('\u4EC5\u4EC5\u6574\u7406\u524D20\u9875'),'\n')
+        }
         # scrab
         for (i in 1:page_number) {
             cat(paste0(tmcn::toUTF8('\u7B2C'),i,tmcn::toUTF8('\u9875')))
