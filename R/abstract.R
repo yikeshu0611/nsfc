@@ -44,7 +44,7 @@ abstract <- function(url,header,subject,search,yearStart,yearEnd,itemCategory,fu
         if (!missing(itemCategory)) url=paste0(url,"&category",itemCategory)
         if (!missing(fundStart))    url=paste0(url,"&fundStart",fundStart)
         if (!missing(fundEnd))      url=paste0(url,"&fundEnd",fundEnd)
-        url=paste0(url,"&submit=list")
+        url=paste0(url,"&submit=list&order=searchYearEnd&orderType=asc")
         #get total page number
         if (missing(header)) r <- GET(url)
         if (!missing(header)) r <- GET(url,add_headers(.headers = header))

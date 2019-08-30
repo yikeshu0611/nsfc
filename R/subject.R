@@ -34,7 +34,7 @@ subject <- function(url,header,subject,yearStart,yearEnd){
         if (!missing(subject))      url=paste0(url,"&subject=",subject)
         if (!missing(yearStart))    url=paste0(url,"&yearStart=",yearStart)
         if (!missing(yearEnd))      url=paste0(url,"&yearEnd=",yearEnd)
-        url=paste0(url,"&submit=list")
+        url=paste0(url,"&submit=list&order=searchYearEnd&orderType=asc")
         #get total page number
         if (missing(header)) r <- GET(url)
         if (!missing(header)) r <- GET(url,add_headers(.headers = header))

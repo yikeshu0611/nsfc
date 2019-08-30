@@ -52,7 +52,7 @@ search <- function(url,header,search,subject,yearStart,yearEnd,itemCategory,fund
         if (!missing(itemCategory)) url=paste0(url,"&category",itemCategory)
         if (!missing(fundStart))    url=paste0(url,"&fundStart",fundStart)
         if (!missing(fundEnd))      url=paste0(url,"&fundEnd",fundEnd)
-        url=paste0(url,"&submit=list")
+        url=paste0(url,"&submit=list&order=searchYearEnd&orderType=asc")
         #get total page number
         if (missing(header)) r <- GET(url)
         if (!missing(header)) r <- GET(url,add_headers(.headers = header))
@@ -263,7 +263,12 @@ search <- function(url,header,search,subject,yearStart,yearEnd,itemCategory,fund
                                      tmcn::toUTF8('\u6458\u8981\u94FE\u63A5'))
             }
             #select search part
-            search_item=unlist(search %s=% item)[duplicated(unlist(search %s=% item))]
+            if (length(search)==1){
+                search_item=unlist(search %s=% item)[unlist(search %s=% item)]
+            }else{
+                search_item=unlist(search %s=% item)[duplicated(unlist(search %s=% item))]
+            }
+
             if (length(search_item)==0) {
                 cat('\n')
                 next(i) # no items in this page
@@ -364,7 +369,6 @@ search <- function(url,header,search,subject,yearStart,yearEnd,itemCategory,fund
                                                 tmcn::toUTF8('\u82F1\u6587\u6458\u8981')
                         )
                     }
-                    if (nchar(abs_cn)>=10) cat(tmcn::toUTF8(' \u627E\u52301\u4E2A'))
                 }
                 # cbind 2 parts
                 df.i = cbind(df_theme,df_abstract)
@@ -374,6 +378,9 @@ search <- function(url,header,search,subject,yearStart,yearEnd,itemCategory,fund
                 df.i = df_theme
                 df = plyr::rbind.fill(df,df.i)
             }
+            cat(tmcn::toUTF8(' \u627E\u5230'),
+                nrow(df_theme),
+                tmcn::toUTF8('\u4E2A'))
         cat('\n')
         }
         return(df)
