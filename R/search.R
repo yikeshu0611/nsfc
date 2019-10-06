@@ -275,7 +275,7 @@ search <- function(url,header,search,subject,yearStart,yearEnd,
             }
             #select search part
             if (length(search)==1){
-                search_item=unlist(search %s=% item)[unlist(search %s=% item)]
+                search_item=unlist(search %s=% item)
             }else{
                 search_item=unlist(search %s=% item)[duplicated(unlist(search %s=% item))]
             }

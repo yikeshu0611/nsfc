@@ -1,6 +1,6 @@
 Package: nsfc
 Title: What the Package Does (One Line, Title Case)
-Version: 0.0.9.3
+Version: 0.0.9.4
 Authors@R: 
     person(given = "First",
            family = "Last",
