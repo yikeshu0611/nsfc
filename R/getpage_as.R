@@ -1,36 +1,23 @@
 
 getpage_as <- function(subject,search,yearStart,yearEnd,
          itemCategory,fundStart,fundEnd){
-inner_Add_Symbol <- function(character,symbol="+"){
-    if (length(character)>=2){
-        for (character.i in 1:length(character)) {
-            if (character.i==1){
-                adj=character[1]
-            }else{
-                adj=paste0(adj,symbol,character[character.i])
-            }
-        }
-    }else{
-        adj=character
-    }
-    adj
-}
 library(httr)
 library(rvest)
 library(magrittr)
 #build url
 url="http://fund.sciencenet.cn/search?"
-if (!missing(search))       url=paste0(url,"name=",inner_Add_Symbol(search))
+if (!missing(search))       url=paste0(url,"name=",do::inner_Add_Symbol(search))
 if (!missing(yearStart))    url=paste0(url,"&yearStart=",yearStart)
 if (!missing(yearEnd))      url=paste0(url,"&yearEnd=",yearEnd)
 url = paste0(url,'&keyWord=1') #using key word query
 if (!missing(subject))      url=paste0(url,"&subject=",subject)
-if (!missing(itemCategory)) url=paste0(url,"&category",itemCategory)
+if (!missing(itemCategory)){
+    itemCategory<-get_category(itemCategory = itemCategory)
+    url=paste0(url,"&category",itemCategory)
+}
 if (!missing(fundStart))    url=paste0(url,"&fundStart",fundStart)
 if (!missing(fundEnd))      url=paste0(url,"&fundEnd",fundEnd)
-
 url1=paste0(url,"&submit=list&order=funding&orderType=asc")
-
 #get total page number
 r <- GET(url1)
 if (status_code(r)==429){
@@ -100,7 +87,6 @@ r_content=content(r)
 fund.max=r_content %>%
     html_nodes(xpath = '//*[@id="resultLst"]/div[1]/div/p[2]/span[1]/b') %>%
     html_text(trim = TRUE)
-
 cat(tmcn::toUTF8('\u5171\u6709'),all_items,
     tmcn::toUTF8('\u4E2A\u9879\u76EE'),'\n')
 cat(tmcn::toUTF8('\u5171\u6709'),page_number,

@@ -18,33 +18,23 @@ abstract <- function(url,header,subject,search,yearStart,yearEnd,
                      year_ascend=TRUE,
                      itemCategory,fundStart,fundEnd){
     if (missing(search)) stop(tmcn::toUTF8('search\u4E0D\u80FD\u4E3A\u7A7A'))
-    inner_Add_Symbol <- function(character,symbol="+"){
-        if (length(character)>=2){
-            for (character.i in 1:length(character)) {
-                if (character.i==1){
-                    adj=character[1]
-                }else{
-                    adj=paste0(adj,symbol,character[character.i])
-                }
-            }
-        }else{
-            adj=character
-        }
-        adj
-    }
     library(httr)
     library(rvest)
     library(magrittr)
+    #select category
     #bulid url and get page_number
     if (missing(url)){
         #build url
         url="http://fund.sciencenet.cn/search?"
-        if (!missing(search))       url=paste0(url,"name=",inner_Add_Symbol(search))
+        if (!missing(search))       url=paste0(url,"name=",do::inner_Add_Symbol(search))
         if (!missing(yearStart))    url=paste0(url,"&yearStart=",yearStart)
         if (!missing(yearEnd))      url=paste0(url,"&yearEnd=",yearEnd)
         url = paste0(url,'&keyWord=1') #using key word query
         if (!missing(subject))      url=paste0(url,"&subject=",subject)
-        if (!missing(itemCategory)) url=paste0(url,"&category",itemCategory)
+        if (!missing(itemCategory)){
+            itemCategory<-get_category(itemCategory = itemCategory)
+            url=paste0(url,"&category",itemCategory)
+        }
         if (!missing(fundStart))    url=paste0(url,"&fundStart",fundStart)
         if (!missing(fundEnd))      url=paste0(url,"&fundEnd",fundEnd)
         if (year_ascend){
@@ -262,7 +252,7 @@ abstract <- function(url,header,subject,search,yearStart,yearEnd,
                 if (length(abstract_url[nchar(Key)==0])>0){ #no abastrct
                     cat(tmcn::toUTF8('\u4EE5\u4E0B'),length(abstract_url[nchar(Key)==0]),
                         tmcn::toUTF8('\u4E2A\u6458\u8981\u94FE\u63A5\u65E0\u6458\u8981'),'\n')
-                    cat(inner_Add_Symbol(abstract_url[nchar(Key)==0],'\n'),'\n')
+                    cat(do::inner_Add_Symbol(abstract_url[nchar(Key)==0],'\n'),'\n')
                 }
                 df_theme_nokey.i=df_theme[nchar(Key)==0,]
                 df_theme_nokey=rbind(df_theme_nokey,df_theme_nokey.i)

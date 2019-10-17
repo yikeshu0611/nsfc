@@ -1,7 +1,7 @@
 #' get nsfc items
 #' @description get nsfc items from http://www.sciencenet.cn/, by key
 #' @param url url
-#' @param header headers 
+#' @param header headers
 #' @param subject subject, ex:H0801
 #' @param search string to search, ex: "m6A"
 #' @param yearStart number, year of start
@@ -28,7 +28,10 @@ nsfc <- function(url,header,subject,search,yearStart,yearEnd,itemCategory,fundSt
         if (!missing(yearEnd))      url=paste0(url,"&yearEnd=",yearEnd)
         url = paste0(url,'&keyWord=1') #using key word query
         if (!missing(subject))      url=paste0(url,"&subject=",subject)
-        if (!missing(itemCategory)) url=paste0(url,"&category",itemCategory)
+        if (!missing(itemCategory)){
+            itemCategory<-get_category(itemCategory = itemCategory)
+            url=paste0(url,"&category",itemCategory)
+        }
         if (!missing(fundStart))    url=paste0(url,"&fundStart",fundStart)
         if (!missing(fundEnd))      url=paste0(url,"&fundEnd",fundEnd)
         url=paste0(url,"&submit=list")
@@ -37,7 +40,7 @@ nsfc <- function(url,header,subject,search,yearStart,yearEnd,itemCategory,fundSt
         if (!missing(header)) r <- GET(url,add_headers(.headers = header))
         if (status_code(r) != 200) stop(tmcn::toUTF8('\u67E5\u8BE2\u7F51\u9875\u51FA\u9519,\u8BF7\u91CD\u65B0\u8D4B\u503C\u5173\u952E\u5B57,\u6216\u7A0D\u540E\u518D\u6B21\u8FDB\u884C,\u6216\u8BBE\u7F6Eheader\u540E\u518D\u8FDB\u884C'))
         r_content=content(r)
-        all_items = r_content %>% 
+        all_items = r_content %>%
             html_nodes(xpath = '//*[@id="l"]/b[1]') %>%
             html_text(trim = TRUE)
         page_number = ceiling(as.numeric(all_items)/10)
@@ -87,50 +90,50 @@ nsfc <- function(url,header,subject,search,yearStart,yearEnd,itemCategory,fundSt
         }
         r_content=content(r)
         #1. study_type
-        study_type = r_content %>% 
+        study_type = r_content %>%
             html_nodes(xpath = '//*[@id="resultLst"]//div/p[1]/i') %>%
             html_text(trim = TRUE) %>%
             gsub(pattern = "\u00A0",replacement = " ")
         #2. item
-        item = r_content %>% 
+        item = r_content %>%
             html_nodes(xpath = '//*[@id="resultLst"]//p/a') %>%
             html_text(trim = TRUE) %>%
             gsub(pattern = "\u00A0",replacement = " ")
         #3. person
-        person = r_content %>% 
+        person = r_content %>%
             html_nodes(xpath = '//*[@id="resultLst"]//div/p[1]/span[1]/i') %>%
             html_text(trim = TRUE) %>%
             gsub(pattern = "\u00A0",replacement = " ")
         #4. department
-        department = r_content %>% 
+        department = r_content %>%
             html_nodes(xpath = '//*[@id="resultLst"]//div/p[1]/span[2]/i') %>%
             html_text(trim = TRUE) %>%
             gsub(pattern = "\u00A0",replacement = " ")
         #5. id
-        id = r_content %>% 
+        id = r_content %>%
             html_nodes(xpath = '//*[@id="resultLst"]/div[position()<=10]/div/p[1]/b') %>%
             html_text(trim = TRUE) %>%
             gsub(pattern = "\u00A0",replacement = " ") %>%
             gsub(pattern = " ",replacement = "")
         #6. year
-        year = r_content %>% 
+        year = r_content %>%
             html_nodes(xpath = '//*[@id="resultLst"]//div/p[1]/span[3]/b') %>%
             html_text(trim = TRUE) %>%
             gsub(pattern = "\u00A0",replacement = " ")
         #7. fund
-        fund = r_content %>% 
+        fund = r_content %>%
             html_nodes(xpath = '//*[@id="resultLst"]//div/p[2]/span[1]/b') %>%
             html_text(trim = TRUE) %>%
             gsub(pattern = "\u00A0",replacement = " ")
         #8. abstract url
-        abstract_url = r_content %>% 
+        abstract_url = r_content %>%
             html_nodes(xpath = '//*[@id="resultLst"]//p/a') %>%
             html_attr("href") %>%
             gsub(pattern = "\u00A0",replacement = " ")
         ###data.frame.i
         # if not missing subject, suject will be added to df
         if (!missing(subject)) {
-            subject.text = r_content %>% 
+            subject.text = r_content %>%
                 html_nodes(xpath = '//*[@id="tab1"]/form/div[2]/div[3]/span[2]/span[1]/span/span[1]') %>%
                 html_text(trim = TRUE)
             df.i = data.frame(subject.text,study_type,item,person,department,
@@ -163,7 +166,7 @@ nsfc <- function(url,header,subject,search,yearStart,yearEnd,itemCategory,fundSt
                        tmcn::toUTF8('\u9879\u76EE\u7F16\u53F7'),
                        tmcn::toUTF8('\u6279\u51C6\u5E74\u5EA6'),
                        tmcn::toUTF8('\u91D1\u989D'),
-                       tmcn::toUTF8('\u6458\u8981\u94FE\u63A5')) 
+                       tmcn::toUTF8('\u6458\u8981\u94FE\u63A5'))
     }
     if (!abstract) return(df)
     if (abstract){

@@ -13,20 +13,6 @@
 #'
 #' @examples subject(yearStart=2018)
 subject <- function(url,header,subject,yearStart,yearEnd,year_ascend=TRUE){
-    inner_Add_Symbol <- function(character,symbol="+"){
-        if (length(character)>=2){
-            for (character.i in 1:length(character)) {
-                if (character.i==1){
-                    adj=character[1]
-                }else{
-                    adj=paste0(adj,symbol,character[character.i])
-                }
-            }
-        }else{
-            adj=character
-        }
-        adj
-    }
     library(httr)
     library(rvest)
     library(magrittr)
@@ -252,7 +238,7 @@ subject <- function(url,header,subject,yearStart,yearEnd,year_ascend=TRUE){
                 if (length(abstract_url[nchar(Key)==0])>0){ #no abastrct
                     cat(tmcn::toUTF8('\u4EE5\u4E0B'),length(abstract_url[nchar(Key)==0]),
                         tmcn::toUTF8('\u4E2A\u6458\u8981\u94FE\u63A5\u65E0\u6458\u8981'),'\n')
-                    cat(inner_Add_Symbol(abstract_url[nchar(Key)==0],'\n'),'\n')
+                    cat(do::inner_Add_Symbol(abstract_url[nchar(Key)==0],'\n'),'\n')
                 }
                 df_theme_nokey.i=df_theme[nchar(Key)==0,]
                 df_theme_nokey=rbind(df_theme_nokey,df_theme_nokey.i)

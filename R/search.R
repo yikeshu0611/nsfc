@@ -18,20 +18,6 @@ search <- function(url,header,search,subject,yearStart,yearEnd,
                    year_ascend=TRUE,
                    itemCategory,fundStart,fundEnd){
     if (missing(search)) stop(tmcn::toUTF8('search\u4E0D\u80FD\u4E3A\u7A7A'))
-    inner_Add_Symbol <- function(character,symbol="+"){
-        if (length(character)>=2){
-            for (character.i in 1:length(character)) {
-                if (character.i==1){
-                    adj=character[1]
-                }else{
-                    adj=paste0(adj,symbol,character[character.i])
-                }
-            }
-        }else{
-            adj=character
-        }
-        adj
-    }
     "%s=%" <- function(a,b){
         loc=list()
         for (i in 1:length(a)) {
@@ -47,12 +33,15 @@ search <- function(url,header,search,subject,yearStart,yearEnd,
     if (missing(url)){
         #build url
         url="http://fund.sciencenet.cn/search?"
-        if (!missing(search))       url=paste0(url,"name=",inner_Add_Symbol(search))
+        if (!missing(search))       url=paste0(url,"name=",do::inner_Add_Symbol(search))
         if (!missing(yearStart))    url=paste0(url,"&yearStart=",yearStart)
         if (!missing(yearEnd))      url=paste0(url,"&yearEnd=",yearEnd)
         url = paste0(url,'&keyWord=1') #using key word query
         if (!missing(subject))      url=paste0(url,"&subject=",subject)
-        if (!missing(itemCategory)) url=paste0(url,"&category",itemCategory)
+        if (!missing(itemCategory)){
+            itemCategory<-get_category(itemCategory = itemCategory)
+            url=paste0(url,"&category",itemCategory)
+        }
         if (!missing(fundStart))    url=paste0(url,"&fundStart",fundStart)
         if (!missing(fundEnd))      url=paste0(url,"&fundEnd",fundEnd)
         if (year_ascend){
