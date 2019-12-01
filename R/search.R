@@ -15,7 +15,7 @@
 #'
 #' @examples search(search='m6A',yearStart=2014,yearEnd=2014)
 search <- function(url,header,search,subject,yearStart,yearEnd,
-                   year_ascend=TRUE,
+                   year_ascend,
                    itemCategory,fundStart,fundEnd){
     if (missing(search)) stop(tmcn::toUTF8('search\u4E0D\u80FD\u4E3A\u7A7A'))
     "%s=%" <- function(a,b){
@@ -26,9 +26,6 @@ search <- function(url,header,search,subject,yearStart,yearEnd,
         }
         loc
     }
-    library(httr)
-    library(rvest)
-    library(magrittr)
     #bulid url and get page_number
     if (missing(url)){
         #build url
@@ -44,10 +41,14 @@ search <- function(url,header,search,subject,yearStart,yearEnd,
         }
         if (!missing(fundStart))    url=paste0(url,"&fundStart",fundStart)
         if (!missing(fundEnd))      url=paste0(url,"&fundEnd",fundEnd)
-        if (year_ascend){
-            url=paste0(url,"&submit=list&order=searchYearEnd&orderType=asc")
+        if (!missing(year_ascend)){
+            if (year_ascend){
+                url=paste0(url,"&submit=list&order=searchYearEnd&orderType=asc")
+            }else{
+                url=paste0(url,"&submit=list&order=searchYearEnd&orderType=desc")
+            }
         }else{
-            url=paste0(url,"&submit=list&order=searchYearEnd&orderType=desc")
+            url=paste0(url,"&submit=list")
         }
         #get total page number
         if (missing(header)) r <- GET(url)
